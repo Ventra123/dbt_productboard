@@ -3,7 +3,7 @@
 This repository is a practice project focused on learning and implementing the following concepts:
 
 - **Sessionization**: Grouping page view events into sessions based on activity.
-- **Incremental Logic**: Handling sessionization in a way that supports incremental processing.
+- **Incremental Logic**: Handling sessionization in a way that supports incremental processing while using window functions.
 
 ## Purpose
 
