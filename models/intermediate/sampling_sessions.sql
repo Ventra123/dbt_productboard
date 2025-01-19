@@ -62,7 +62,8 @@ with trial_event_data as (
     , timestamp_diff(event_timestamp, coalesce(current_batch_prev_event_timestamp, last_processed_event_timestamp), SECOND) as time_diff_seconds
     -- A session starts if there is no previous event or the time gap exceeds 30 mins
     , CASE
-        WHEN current_batch_prev_event_timestamp IS NULL or timestamp_diff(event_timestamp, coalesce(current_batch_prev_event_timestamp,last_processed_event_timestamp), SECOND) >= 1800 then 1
+        WHEN current_batch_prev_event_timestamp IS NULL and last_processed_event_timestamp is null then 1
+        WHEN timestamp_diff(event_timestamp, coalesce(current_batch_prev_event_timestamp,last_processed_event_timestamp), SECOND) >= 1800 then 1
         else 0 
         end  as is_session_start
     from current_events_sorted
