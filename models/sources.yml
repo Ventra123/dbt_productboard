@@ -1,0 +1,9 @@
+version: 2
+sources:
+  - name: productboard
+    schema: raw
+    database: productboard-444414
+    tables:
+      - name: sampling
+      - name: status
+      - name: usage
