@@ -38,10 +38,10 @@ with trial_event_data as (
 , current_events as (
     select trial_event_data.*
         {% if is_incremental() %}
-        , coalesce(last_processed_status.last_session_id,0) as last_processed_session_id
+        , coalesce(last_processed_status.last_session_id,'0-0') as last_processed_session_id
         , coalesce(last_processed_status.last_event_timestamp, null) as last_processed_event_timestamp
         {% else %}
-        , null as last_processed_session_id
+        , '0-0' as last_processed_session_id
         , null as last_processed_event_timestamp
         {% endif %}
     from trial_event_data
@@ -72,7 +72,18 @@ with trial_event_data as (
 , session_ids as (
     select *
     -- Assign session IDs by sequential session count
-    , coalesce(last_processed_session_id, 0) + sum(is_session_start) over (partition by user_id order by event_timestamp) as session_id
+    , concat(
+        user_id, '-',
+        cast( 
+            coalesce(
+                cast(
+                    split(last_processed_session_id,'-')[offset(1)] as int
+                    ), 0) + sum(is_session_start) over (
+                        partition by user_id order by event_timestamp
+                        )
+         as string
+        )
+     ) as session_id
     from session_flags
 )
 
