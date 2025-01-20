@@ -23,11 +23,12 @@ with trial_event_data as (
 )
 
 -- Get prior session info during each incremental run
+-- Extract numerical session id for each user
 {% if is_incremental() %}
 , last_processed_status as (
     select user_id
         , max(event_timestamp) as last_event_timestamp
-        , max(session_id) as last_session_id
+        , max(cast(split(session_id,'-')[offset(1)] as int)) as last_session_id
     from {{ this }}
     group by user_id
 )
@@ -38,11 +39,11 @@ with trial_event_data as (
 , current_events as (
     select trial_event_data.*
         {% if is_incremental() %}
-        , coalesce(last_processed_status.last_session_id,'0-0') as last_processed_session_id
+        , coalesce(last_processed_status.last_session_id, null) as last_processed_session_id
         , coalesce(last_processed_status.last_event_timestamp, null) as last_processed_event_timestamp
         {% else %}
-        , '0-0' as last_processed_session_id
-        , null as last_processed_event_timestamp
+        , null as last_processed_session_id
+        , cast(null as timestamp) as last_processed_event_timestamp
         {% endif %}
     from trial_event_data
     {% if is_incremental() %}
@@ -75,12 +76,8 @@ with trial_event_data as (
     , concat(
         user_id, '-',
         cast( 
-            coalesce(
-                cast(
-                    split(last_processed_session_id,'-')[offset(1)] as int
-                    ), 0) + sum(is_session_start) over (
-                        partition by user_id order by event_timestamp
-                        )
+            coalesce(last_processed_session_id, 0) + sum(is_session_start) over (
+                        partition by user_id order by event_timestamp)
          as string
         )
      ) as session_id
