@@ -122,6 +122,7 @@ session_ids as (
 )
 
 select
+    session_id,
     space_id,
     user_id,
     event_name,
@@ -130,7 +131,5 @@ select
     event_date,
     days_since_trial_start,
     user_role,
-    board_type,
-    is_session_start,
-    session_id
+    board_type
 from session_ids
