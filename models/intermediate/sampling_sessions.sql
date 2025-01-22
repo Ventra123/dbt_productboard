@@ -38,7 +38,6 @@ with trial_event_data as (
 {% endif %}
 
 
-
 current_events as (
     select
         trial_event_data.*,
@@ -122,4 +121,16 @@ session_ids as (
     from session_flags
 )
 
-select * from session_ids
+select
+    space_id,
+    user_id,
+    event_name,
+    event_action,
+    event_timestamp,
+    event_date,
+    days_since_trial_start,
+    user_role,
+    board_type,
+    is_session_start,
+    session_id
+from session_ids
