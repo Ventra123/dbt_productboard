@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: sampling_sessions
+    description: Model where we sessionize the raw trial sampling data
+    columns:
+      - name: session_id
+        description: unique identifier for each session
+        data_tests:
+          - unique
+          - not_null
+      - name: space_id
+        description: unique identifier for an account or "space"
+      - name: user_id
+        description: unique identifier for each user of a space
+      - name: event_name
+        description: type of event
+      - name: event_action
+        description: type of user action
+      - name: event_timestamp
+        description: timestamp of event log
+      - name: event_date
+        description: date of event log
+      - name: days_since_trial_start
+        description: number of days since user started the trial
+      - name: user_role
+        description: access role of the user
+      - name: board_type
+        description: type of board
