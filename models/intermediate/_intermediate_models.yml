@@ -18,9 +18,9 @@ models:
       - name: event_action
         description: type of user action
       - name: event_timestamp
-        description: timestamp of event log
+        description: timestamp when event is logged
       - name: event_date
-        description: date of event log
+        description: date when event is logged
       - name: days_since_trial_start
         description: number of days since user started the trial
       - name: user_role
